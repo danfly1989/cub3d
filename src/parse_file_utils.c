@@ -9,9 +9,11 @@
 /*   Updated: 2026/02/28 16:25:04 by daflynn          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "cub3d.h"
 
- char	*read_all(int fd)
+#include "cub3d.h"
+#include "parse_file_utils.h"
+
+char	*read_all(int fd)
 {
 	char	buf[4096];
 	char	*content;
@@ -35,7 +37,7 @@
 	return (content);
 }
 
- void	normalize_line(char *line)
+void	normalize_line(char *line)
 {
 	int	len;
 
@@ -46,7 +48,7 @@
 		line[len - 1] = '\0';
 }
 
- void	set_split_line(char **lines, char *content, int *p)
+void	set_split_line(char **lines, char *content, int *p)
 {
 	lines[p[2]] = ft_substr(content, p[0], p[1] - p[0]);
 	normalize_line(lines[p[2]]);
@@ -54,7 +56,7 @@
 	p[0] = p[1] + 1;
 }
 
- char	**split_lines(char *content)
+char	**split_lines(char *content)
 {
 	char	**lines;
 	int		p[3];
@@ -79,5 +81,3 @@
 	normalize_line(lines[p[2]]);
 	return (lines);
 }
-
-

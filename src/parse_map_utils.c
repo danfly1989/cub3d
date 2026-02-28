@@ -9,10 +9,11 @@
 /*   Updated: 2026/02/28 16:24:35 by daflynn          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "cub3d.h"
 #include "parse_map_utils.h"
 
- int	count_map_rows(char **lines, int start)
+int	count_map_rows(char **lines, int start)
 {
 	int	count;
 
@@ -22,7 +23,7 @@
 	return (count);
 }
 
- void	set_map_width(t_game *game)
+void	set_map_width(t_game *game)
 {
 	int	i;
 	int	len;
@@ -38,7 +39,7 @@
 	}
 }
 
- void	set_ns_direction(t_game *game, char c)
+void	set_ns_direction(t_game *game, char c)
 {
 	game->dir_x = 0;
 	if (c == 'N')
@@ -54,7 +55,7 @@
 	game->plane_y = 0;
 }
 
- void	set_player_direction(t_game *game, char c)
+void	set_player_direction(t_game *game, char c)
 {
 	if (c == 'N' || c == 'S')
 		set_ns_direction(game, c);
@@ -74,4 +75,3 @@
 		game->plane_x = 0;
 	}
 }
-
