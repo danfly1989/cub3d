@@ -6,12 +6,12 @@
 /*   By: daflynn <daflynn@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/28 13:39:17 by daflynn           #+#    #+#             */
-/*   Updated: 2026/02/28 13:39:19 by daflynn          ###   ########.fr       */
+/*   Updated: 2026/02/28 14:20:19 by daflynn          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_WRAPPER_H
-# define LIBFT_WRAPPER_H
+#ifndef LIBFT_H
+# define LIBFT_H
 
 # include "./libft/libft.h"
 

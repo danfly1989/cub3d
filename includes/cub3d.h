@@ -6,7 +6,7 @@
 /*   By: daflynn <daflynn@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/28 13:40:30 by daflynn           #+#    #+#             */
-/*   Updated: 2026/02/28 13:40:32 by daflynn          ###   ########.fr       */
+/*   Updated: 2026/02/28 14:13:48 by daflynn          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ typedef struct s_img
 	int		bits_per_pixel;
 	int		line_length;
 	int		endian;
-} 	t_img;
+}	t_img;
 
 typedef struct s_game
 {
@@ -41,7 +41,7 @@ typedef struct s_game
 	double	plane_y;
 	int		world_map[24][24];
 	t_img	img;
-} 	t_game;
+}	t_game;
 
 int		handle_keypress(int keycode, t_game *game);
 int		handle_close(t_game *game);
