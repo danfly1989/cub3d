@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "cub3d.h"
+#include "parse_map_utils.h"
 
 void	set_player_spawn(t_game *game)
 {

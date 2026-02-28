@@ -17,7 +17,9 @@ SRC = src/main.c \
       src/parse_meta.c \
       src/parse_map.c \
       src/parse_validate.c \
-      src/cleanup.c
+      src/cleanup.c \
+      src/parse_map_utils.c \
+      src/parse_file_utils.c
 
 OBJ = $(SRC:.c=.o)
 
