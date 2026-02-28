@@ -136,7 +136,7 @@ static void	draw_wall_column(t_game *game, t_ray *ray, int x)
 	y = ray->draw_start;
 	while (y < ray->draw_end)
 	{
-put_pixel(game, x, y, ray->color);		y++;
+		put_pixel(game, x, y, ray->color);		y++;
 	}
 }
 
@@ -157,3 +157,4 @@ void	render_frame(t_game *game)
 	}
 	mlx_put_image_to_window(game->mlx, game->win, game->img.img, 0, 0);
 }
+

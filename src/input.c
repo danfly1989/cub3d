@@ -19,24 +19,34 @@
 
 int	handle_keypress(int keycode, t_game *game)
 {
+	double	new_x;
+	double	new_y;
 	double	old_dir_x;
 	double	old_plane_x;
 
 	if (keycode == 65307) // ESC
 		exit(0);
-	// Move forward
+
 	if (keycode == 'w')
 	{
-		game->pos_x += game->dir_x * MOVE_SPEED;
-		game->pos_y += game->dir_y * MOVE_SPEED;
+		new_x = game->pos_x + game->dir_x * MOVE_SPEED;
+		new_y = game->pos_y + game->dir_y * MOVE_SPEED;
+		if (game->world_map[(int)new_x][(int)new_y] == 0)
+		{
+			game->pos_x = new_x;
+			game->pos_y = new_y;
+		}
 	}
-	// Move backward
 	if (keycode == 's')
 	{
-		game->pos_x -= game->dir_x * MOVE_SPEED;
-		game->pos_y -= game->dir_y * MOVE_SPEED;
+		new_x = game->pos_x - game->dir_x * MOVE_SPEED;
+		new_y = game->pos_y - game->dir_y * MOVE_SPEED;
+		if (game->world_map[(int)new_x][(int)new_y] == 0)
+		{
+			game->pos_x = new_x;
+			game->pos_y = new_y;
+		}
 	}
-	// Rotate left
 	if (keycode == 'a')
 	{
 		old_dir_x = game->dir_x;
@@ -46,7 +56,6 @@ int	handle_keypress(int keycode, t_game *game)
 		game->plane_x = game->plane_x * cos(ROT_SPEED) - game->plane_y * sin(ROT_SPEED);
 		game->plane_y = old_plane_x * sin(ROT_SPEED) + game->plane_y * cos(ROT_SPEED);
 	}
-	// Rotate right
 	if (keycode == 'd')
 	{
 		old_dir_x = game->dir_x;
@@ -56,6 +65,7 @@ int	handle_keypress(int keycode, t_game *game)
 		game->plane_x = game->plane_x * cos(-ROT_SPEED) - game->plane_y * sin(-ROT_SPEED);
 		game->plane_y = old_plane_x * sin(-ROT_SPEED) + game->plane_y * cos(-ROT_SPEED);
 	}
+
 	render_frame(game);
 	return (0);
 }

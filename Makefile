@@ -41,14 +41,15 @@ src/%.o: src/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Clean
+# Clean
 clean:
 	@make -C $(LIBFT_DIR) clean
-	@make -C $(MLX_DIR) clean
+	@if [ -d $(MLX_DIR) ]; then make -C $(MLX_DIR) clean; fi
 	@rm -f $(OBJ)
 
 fclean: clean
 	@make -C $(LIBFT_DIR) fclean
 	@rm -f $(NAME)
-	@rm -rf $(MLX_DIR)
+	@if [ -d $(MLX_DIR) ]; then rm -rf $(MLX_DIR); fi
 
 re: fclean all
