@@ -6,7 +6,7 @@ LIBFT = $(LIBFT_DIR)/libft.a
 MLX_DIR = minilibx
 MLX_LIB = $(MLX_DIR)/libmlx.a
 
-SRC = src/main.c src/raycasting.c src/input.c
+SRC = src/main.c src/raycasting.c src/raycasting_background.c src/input.c
 OBJ = $(SRC:.c=.o)
 
 CC = cc

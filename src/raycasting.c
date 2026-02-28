@@ -6,7 +6,7 @@
 /*   By: daflynn <daflynn@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/24 18:32:52 by daflynn           #+#    #+#             */
-/*   Updated: 2026/02/28 13:58:51 by daflynn          ###   ########.fr       */
+/*   Updated: 2026/02/28 16:12:44 by daflynn          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,37 +32,7 @@ typedef struct s_ray
 	int		draw_start;
 	int		draw_end;
 	int		color;
-}	t_ray;
-
-static void	put_pixel(t_game *game, int x, int y, int color)
-{
-	char	*dst;
-
-	dst = game->img.addr + (y * game->img.line_length
-			+ x * (game->img.bits_per_pixel / 8));
-	*(unsigned int *)dst = color;
-}
-
-void	draw_background(t_game *game)
-{
-	int	x;
-	int	y;
-
-	y = 0;
-	while (y < game->screen_height)
-	{
-		x = 0;
-		while (x < game->screen_width)
-		{
-			if (y < game->screen_height / 2)
-				put_pixel(game, x, y, 0x87CEEB);
-			else
-				put_pixel(game, x, y, 0x228B22);
-			x++;
-		}
-		y++;
-	}
-}
+}   t_ray;
 
 static void	init_ray(t_game *game, t_ray *ray, int x)
 {
@@ -129,12 +99,15 @@ static void	compute_wall_slice(t_game *game, t_ray *ray)
 
 static void	draw_wall_column(t_game *game, t_ray *ray, int x)
 {
-	int	y;
+	int		y;
+	char	*dst;
 
 	y = ray->draw_start;
 	while (y < ray->draw_end)
 	{
-		put_pixel(game, x, y, ray->color);
+		dst = game->img.addr + (y * game->img.line_length
+				+ x * (game->img.bits_per_pixel / 8));
+		*(unsigned int *)dst = ray->color;
 		y++;
 	}
 }
