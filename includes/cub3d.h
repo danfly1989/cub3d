@@ -107,14 +107,6 @@ void			set_player_spawn(t_game *game);
 void			parse_error(char *msg);
 char			**parse_read_lines(char *path);
 void			free_lines(char **lines);
-char			*read_all(int fd);
-void			normalize_line(char *line);
-void			set_split_line(char **lines, char *content, int *p);
-char			**split_lines(char *content);
-int				count_map_rows(char **lines, int start);
-void			set_map_width(t_game *game);
-void			set_ns_direction(t_game *game, char c);
-void			set_player_direction(t_game *game, char c);
 void			cleanup(t_game *game);
 
 #endif

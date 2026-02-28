@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 #include "cub3d.h"
 
-char	*read_all(int fd)
+ char	*read_all(int fd)
 {
 	char	buf[4096];
 	char	*content;
@@ -35,7 +35,7 @@ char	*read_all(int fd)
 	return (content);
 }
 
-void	normalize_line(char *line)
+ void	normalize_line(char *line)
 {
 	int	len;
 
@@ -46,7 +46,7 @@ void	normalize_line(char *line)
 		line[len - 1] = '\0';
 }
 
-void	set_split_line(char **lines, char *content, int *p)
+ void	set_split_line(char **lines, char *content, int *p)
 {
 	lines[p[2]] = ft_substr(content, p[0], p[1] - p[0]);
 	normalize_line(lines[p[2]]);
@@ -54,7 +54,7 @@ void	set_split_line(char **lines, char *content, int *p)
 	p[0] = p[1] + 1;
 }
 
-char	**split_lines(char *content)
+ char	**split_lines(char *content)
 {
 	char	**lines;
 	int		p[3];
@@ -79,3 +79,5 @@ char	**split_lines(char *content)
 	normalize_line(lines[p[2]]);
 	return (lines);
 }
+
+
