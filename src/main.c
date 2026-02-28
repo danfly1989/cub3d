@@ -66,6 +66,7 @@ int	main(void)
 	t_game	game;
 
 	init_game(&game);
+	load_textures(&game);
 	init_world_map(&game);
 	render_frame(&game);
 	mlx_hook(game.win, 2, 1L << 0, handle_keypress, &game);

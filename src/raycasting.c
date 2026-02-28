@@ -6,33 +6,11 @@
 /*   By: daflynn <daflynn@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/24 18:32:52 by daflynn           #+#    #+#             */
-/*   Updated: 2026/02/28 16:12:44 by daflynn          ###   ########.fr       */
+/*   Updated: 2026/02/28 14:12:46 by daflynn          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
-
-typedef struct s_ray
-{
-	int		map_x;
-	int		map_y;
-	double	camera_x;
-	double	ray_dir_x;
-	double	ray_dir_y;
-	double	delta_dist_x;
-	double	delta_dist_y;
-	double	side_dist_x;
-	double	side_dist_y;
-	double	perp_wall_dist;
-	int		step_x;
-	int		step_y;
-	int		hit;
-	int		side;
-	int		line_height;
-	int		draw_start;
-	int		draw_end;
-	int		color;
-}   t_ray;
 
 static void	init_ray(t_game *game, t_ray *ray, int x)
 {
@@ -99,15 +77,37 @@ static void	compute_wall_slice(t_game *game, t_ray *ray)
 
 static void	draw_wall_column(t_game *game, t_ray *ray, int x)
 {
-	int		y;
-	char	*dst;
+	int				y;
+	int				tex_y;
+	unsigned int	color;
+	double			step;
+	double			tex_pos;
+	t_img			*tex;
+
+	tex = &game->texture[get_texture_index(ray)];
+	calculate_texture_coords(game, ray, tex);
+
+	step = 1.0 * tex->height / ray->line_height;
+	tex_pos = (ray->draw_start - game->screen_height / 2
+				+ ray->line_height / 2) * step;
 
 	y = ray->draw_start;
 	while (y < ray->draw_end)
 	{
-		dst = game->img.addr + (y * game->img.line_length
-				+ x * (game->img.bits_per_pixel / 8));
-		*(unsigned int *)dst = ray->color;
+		tex_y = (int)tex_pos;
+		if (tex_y >= tex->height)  // clamp to avoid overflow
+			tex_y = tex->height - 1;
+		tex_pos += step;
+
+		color = get_tex_pixel(tex, ray->tex_x, tex_y);
+		// Optional shading for side hits
+		if (ray->side == 1)
+			color = (color >> 1) & 0x7F7F7F;  // darken
+
+		// Write to image buffer (your put_pixel or direct memory)
+		char *dst = game->img.addr + (y * game->img.line_length
+					+ x * (game->img.bits_per_pixel / 8));
+		*(unsigned int *)dst = color;
 		y++;
 	}
 }
