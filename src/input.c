@@ -12,9 +12,11 @@
 
 #include "cub3d.h"
 
-#define MOVE_SPEED 0.1
-#define ROT_SPEED 0.05
-#define ESC_KEY 65307
+# define MOVE_SPEED 0.05
+# define ROT_SPEED  0.03
+# define ESC_KEY    65307
+# define LEFT_KEY   65361
+# define RIGHT_KEY  65363
 
 static void	move_player(t_game *game, double direction)
 {
@@ -23,11 +25,10 @@ static void	move_player(t_game *game, double direction)
 
 	new_x = game->pos_x + (game->dir_x * MOVE_SPEED * direction);
 	new_y = game->pos_y + (game->dir_y * MOVE_SPEED * direction);
-	if (game->world_map[(int)new_x][(int)new_y] == 0)
-	{
+	if (!is_wall(game, (int)new_x, (int)game->pos_y))
 		game->pos_x = new_x;
+	if (!is_wall(game, (int)game->pos_x, (int)new_y))
 		game->pos_y = new_y;
-	}
 }
 
 static void	rotate_player(t_game *game, double angle)
@@ -46,21 +47,24 @@ static void	rotate_player(t_game *game, double angle)
 int	handle_keypress(int keycode, t_game *game)
 {
 	if (keycode == ESC_KEY)
+	{
+		cleanup(game);
 		exit(0);
+	}
 	if (keycode == 'w')
 		move_player(game, 1.0);
 	if (keycode == 's')
 		move_player(game, -1.0);
-	if (keycode == 'a')
-		rotate_player(game, ROT_SPEED);
-	if (keycode == 'd')
+	if (keycode == LEFT_KEY || keycode == 'a')
 		rotate_player(game, -ROT_SPEED);
+	if (keycode == RIGHT_KEY || keycode == 'd')
+		rotate_player(game, ROT_SPEED);
 	render_frame(game);
 	return (0);
 }
 
 int	handle_close(t_game *game)
 {
-	(void)game;
+	cleanup(game);
 	exit(0);
 }

@@ -6,7 +6,7 @@
 /*   By: daflynn <daflynn@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/28 13:40:30 by daflynn           #+#    #+#             */
-/*   Updated: 2026/02/28 14:13:48 by daflynn          ###   ########.fr       */
+/*   Updated: 2026/02/28 15:52:13 by daflynn          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,16 @@
 # include "libft.h"
 # include <math.h>
 # include <stdlib.h>
+# include <fcntl.h>
+# include <unistd.h>
+
+/*
+** Texture indices — must match get_texture_index() in texture_utils.c
+**   0 = North  (ray_dir_y < 0, side == 1)
+**   1 = South  (ray_dir_y > 0, side == 1)
+**   2 = East   (ray_dir_x > 0, side == 0)
+**   3 = West   (ray_dir_x < 0, side == 0)
+*/
 
 typedef struct s_ray
 {
@@ -64,20 +74,36 @@ typedef struct s_game
 	double	dir_y;
 	double	plane_x;
 	double	plane_y;
-	int		world_map[24][24];
+	char	**map;
+	int		map_width;
+	int		map_height;
+	char	*tex_path[4];
+	int		floor_color;
+	int		ceil_color;
 	t_img	img;
 	t_img	texture[4];
 }	t_game;
 
-int		handle_keypress(int keycode, t_game *game);
-int		handle_close(t_game *game);
-void	init_game(t_game *game);
-void	init_world_map(t_game *game);
-void	render_frame(t_game *game);
-void	draw_background(t_game *game);
-void	load_textures(t_game *game);
-int		get_texture_index(t_ray *ray);
-void	calculate_texture_coords(t_game *game, t_ray *ray, t_img *tex);
+/* ── render ─────────────────────────────────────────────────────────────── */
+int				handle_keypress(int keycode, t_game *game);
+int				handle_close(t_game *game);
+void			init_game(t_game *game);
+void			render_frame(t_game *game);
+void			draw_background(t_game *game);
+void			load_textures(t_game *game);
+int				get_texture_index(t_ray *ray);
+void			calculate_texture_coords(t_game *game, t_ray *ray, t_img *tex);
 unsigned int	get_tex_pixel(t_img *tex, int x, int y);
+int				is_wall(t_game *game, int x, int y);
+
+/* ── parser ──────────────────────────────────────────────────────────────── */
+void			parse_cub_file(t_game *game, char *path);
+void			parse_meta_line(t_game *game, char *line);
+int				is_meta_complete(t_game *game);
+void			parse_map_section(t_game *game, char **lines, int start);
+void			validate_map(t_game *game);
+void			set_player_spawn(t_game *game);
+void			parse_error(char *msg);
+void			cleanup(t_game *game);
 
 #endif

@@ -13,7 +13,20 @@
 #include "cub3d.h"
 
 static void	draw_wall_pixel(t_game *game, t_ray *ray, t_img *tex,
-					int x, int y, double tex_pos);
+				int x, int y, double tex_pos);
+
+/*
+** Safe map accessor — treats any out-of-bounds or space cell as a wall.
+** This is the single point of contact between raycasting and the map.
+*/
+int	is_wall(t_game *game, int x, int y)
+{
+	if (x < 0 || y < 0 || y >= game->map_height)
+		return (1);
+	if (x >= (int)ft_strlen(game->map[y]))
+		return (1);
+	return (game->map[y][x] == '1' || game->map[y][x] == ' ');
+}
 
 static void	init_ray(t_game *game, t_ray *ray, int x)
 {
@@ -26,8 +39,8 @@ static void	init_ray(t_game *game, t_ray *ray, int x)
 		+ (ray->ray_dir_x != 0) * fabs(1 / ray->ray_dir_x);
 	ray->delta_dist_y = (ray->ray_dir_y == 0) * 1e30
 		+ (ray->ray_dir_y != 0) * fabs(1 / ray->ray_dir_y);
-	ray->step_x = (ray->ray_dir_x < 0) * -1 + (ray->ray_dir_x >= 0);
-	ray->step_y = (ray->ray_dir_y < 0) * -1 + (ray->ray_dir_y >= 0);
+	ray->step_x = (ray->ray_dir_x < 0) * -1 + (ray->ray_dir_x > 0);
+	ray->step_y = (ray->ray_dir_y < 0) * -1 + (ray->ray_dir_y > 0);
 	ray->side_dist_x = (ray->ray_dir_x < 0) * (game->pos_x - ray->map_x)
 		* ray->delta_dist_x + (ray->ray_dir_x >= 0)
 		* (ray->map_x + 1.0 - game->pos_x) * ray->delta_dist_x;
@@ -53,7 +66,7 @@ static void	cast_ray_until_hit(t_game *game, t_ray *ray)
 			ray->map_y += ray->step_y;
 			ray->side = 1;
 		}
-		if (game->world_map[ray->map_x][ray->map_y] > 0)
+		if (is_wall(game, ray->map_x, ray->map_y))
 			ray->hit = 1;
 	}
 }
@@ -61,11 +74,11 @@ static void	cast_ray_until_hit(t_game *game, t_ray *ray)
 static void	compute_wall_slice(t_game *game, t_ray *ray)
 {
 	if (ray->side == 0)
-		ray->perp_wall_dist = (ray->map_x - game->pos_x + (1 - ray->step_x) / 2)
-			/ ray->ray_dir_x;
+		ray->perp_wall_dist = (ray->map_x - game->pos_x
+				+ (1 - ray->step_x) / 2) / ray->ray_dir_x;
 	else
-		ray->perp_wall_dist = (ray->map_y - game->pos_y + (1 - ray->step_y) / 2)
-			/ ray->ray_dir_y;
+		ray->perp_wall_dist = (ray->map_y - game->pos_y
+				+ (1 - ray->step_y) / 2) / ray->ray_dir_y;
 	ray->line_height = (int)(game->screen_height / ray->perp_wall_dist);
 	ray->draw_start = -ray->line_height / 2 + game->screen_height / 2;
 	if (ray->draw_start < 0)
@@ -73,23 +86,20 @@ static void	compute_wall_slice(t_game *game, t_ray *ray)
 	ray->draw_end = ray->line_height / 2 + game->screen_height / 2;
 	if (ray->draw_end >= game->screen_height)
 		ray->draw_end = game->screen_height - 1;
-	ray->color = 0xFF0000;
-	if (ray->side == 1)
-		ray->color /= 2;
 }
 
 static void	draw_wall_column(t_game *game, t_ray *ray, int x)
 {
-	int				y;
-	double			step;
-	double			tex_pos;
-	t_img			*tex;
+	double	step;
+	double	tex_pos;
+	t_img	*tex;
+	int		y;
 
 	tex = &game->texture[get_texture_index(ray)];
 	calculate_texture_coords(game, ray, tex);
 	step = 1.0 * tex->height / ray->line_height;
 	tex_pos = (ray->draw_start - game->screen_height / 2
-					+ ray->line_height / 2) * step;
+			+ ray->line_height / 2) * step;
 	y = ray->draw_start;
 	while (y < ray->draw_end)
 	{
@@ -100,7 +110,7 @@ static void	draw_wall_column(t_game *game, t_ray *ray, int x)
 }
 
 static void	draw_wall_pixel(t_game *game, t_ray *ray, t_img *tex,
-					int x, int y, double tex_pos)
+				int x, int y, double tex_pos)
 {
 	int				tex_y;
 	unsigned int	color;
@@ -119,8 +129,8 @@ static void	draw_wall_pixel(t_game *game, t_ray *ray, t_img *tex,
 
 void	render_frame(t_game *game)
 {
-	int		x;
 	t_ray	ray;
+	int		x;
 
 	draw_background(game);
 	x = 0;
