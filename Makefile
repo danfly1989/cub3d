@@ -1,16 +1,16 @@
 NAME = cub3d
 
-LIBFT_DIR = libft
+LIBFT_DIR = includes/libft
 LIBFT = $(LIBFT_DIR)/libft.a
 
 MLX_DIR = minilibx
 MLX_LIB = $(MLX_DIR)/libmlx.a
 
-SRC = src/main.c src/raycasting.c
+SRC = src/main.c src/raycasting.c src/input.c
 OBJ = $(SRC:.c=.o)
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -Iincludes -I$(LIBFT_DIR) -I$(MLX_DIR)
+CFLAGS = -Wall -Wextra -Werror -Iincludes -I$(MLX_DIR)
 LDFLAGS = -L$(LIBFT_DIR) -L$(MLX_DIR)
 LDLIBS = -lft -lmlx -lm -lXext -lX11 -lpthread -lrt -ldl
 
