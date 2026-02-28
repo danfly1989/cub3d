@@ -12,13 +12,6 @@
 
 #include "cub3d.h"
 
-static void	draw_wall_pixel(t_game *game, t_ray *ray, t_img *tex,
-				int x, int y, double tex_pos);
-
-/*
-** Safe map accessor — treats any out-of-bounds or space cell as a wall.
-** This is the single point of contact between raycasting and the map.
-*/
 int	is_wall(t_game *game, int x, int y)
 {
 	if (x < 0 || y < 0 || y >= game->map_height)
@@ -86,45 +79,6 @@ static void	compute_wall_slice(t_game *game, t_ray *ray)
 	ray->draw_end = ray->line_height / 2 + game->screen_height / 2;
 	if (ray->draw_end >= game->screen_height)
 		ray->draw_end = game->screen_height - 1;
-}
-
-static void	draw_wall_column(t_game *game, t_ray *ray, int x)
-{
-	double	step;
-	double	tex_pos;
-	t_img	*tex;
-	int		y;
-
-	tex = &game->texture[get_texture_index(ray)];
-	calculate_texture_coords(game, ray, tex);
-	step = 1.0 * tex->height / ray->line_height;
-	tex_pos = (ray->draw_start - game->screen_height / 2
-			+ ray->line_height / 2) * step;
-	y = ray->draw_start;
-	while (y < ray->draw_end)
-	{
-		draw_wall_pixel(game, ray, tex, x, y, tex_pos);
-		tex_pos += step;
-		y++;
-	}
-}
-
-static void	draw_wall_pixel(t_game *game, t_ray *ray, t_img *tex,
-				int x, int y, double tex_pos)
-{
-	int				tex_y;
-	unsigned int	color;
-	char			*dst;
-
-	tex_y = (int)tex_pos;
-	if (tex_y >= tex->height)
-		tex_y = tex->height - 1;
-	color = get_tex_pixel(tex, ray->tex_x, tex_y);
-	if (ray->side == 1)
-		color = (color >> 1) & 0x7F7F7F;
-	dst = game->img.addr + (y * game->img.line_length
-			+ x * (game->img.bits_per_pixel / 8));
-	*(unsigned int *)dst = color;
 }
 
 void	render_frame(t_game *game)

@@ -12,10 +12,6 @@
 
 #include "cub3d.h"
 
-/*
-** Count consecutive non-NULL lines from index start.
-** Per subject: map must be last element — any blank line ends the map.
-*/
 static int	count_map_rows(char **lines, int start)
 {
 	int	count;
@@ -26,9 +22,6 @@ static int	count_map_rows(char **lines, int start)
 	return (count);
 }
 
-/*
-** Compute the width of the widest map row.
-*/
 static void	set_map_width(t_game *game)
 {
 	int	i;
@@ -45,10 +38,43 @@ static void	set_map_width(t_game *game)
 	}
 }
 
-/*
-** Set the player's starting position and direction from spawn char.
-** Replaces the spawn character with '0' so raycasting treats it as floor.
-*/
+static void	set_ns_direction(t_game *game, char c)
+{
+	game->dir_x = 0;
+	if (c == 'N')
+	{
+		game->dir_y = -1;
+		game->plane_x = 0.66;
+	}
+	else
+	{
+		game->dir_y = 1;
+		game->plane_x = -0.66;
+	}
+	game->plane_y = 0;
+}
+
+static void	set_player_direction(t_game *game, char c)
+{
+	if (c == 'N' || c == 'S')
+		set_ns_direction(game, c);
+	else
+	{
+		game->dir_y = 0;
+		if (c == 'E')
+		{
+			game->dir_x = 1;
+			game->plane_y = 0.66;
+		}
+		else
+		{
+			game->dir_x = -1;
+			game->plane_y = -0.66;
+		}
+		game->plane_x = 0;
+	}
+}
+
 void	set_player_spawn(t_game *game)
 {
 	int		y;
@@ -66,14 +92,7 @@ void	set_player_spawn(t_game *game)
 			{
 				game->pos_x = x + 0.5;
 				game->pos_y = y + 0.5;
-				if (c == 'N') { game->dir_x = 0; game->dir_y = -1;
-					game->plane_x = 0.66; game->plane_y = 0; }
-				else if (c == 'S') { game->dir_x = 0; game->dir_y = 1;
-					game->plane_x = -0.66; game->plane_y = 0; }
-				else if (c == 'E') { game->dir_x = 1; game->dir_y = 0;
-					game->plane_x = 0; game->plane_y = 0.66; }
-				else { game->dir_x = -1; game->dir_y = 0;
-					game->plane_x = 0; game->plane_y = -0.66; }
+				set_player_direction(game, c);
 				game->map[y][x] = '0';
 				return ;
 			}
@@ -83,10 +102,6 @@ void	set_player_spawn(t_game *game)
 	}
 }
 
-/*
-** Allocate game->map, copy each row from the parsed lines.
-** map is NULL-terminated. map_height and map_width are set.
-*/
 void	parse_map_section(t_game *game, char **lines, int start)
 {
 	int	height;

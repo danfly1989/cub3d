@@ -20,74 +20,6 @@ void	parse_error(char *msg)
 	exit(1);
 }
 
-static char	*read_all(int fd)
-{
-	char	buf[4096];
-	char	*content;
-	char	*tmp;
-	int		n;
-
-	content = ft_strdup("");
-	if (!content)
-		return (NULL);
-	n = read(fd, buf, 4095);
-	while (n > 0)
-	{
-		buf[n] = '\0';
-		tmp = ft_strjoin(content, buf);
-		free(content);
-		content = tmp;
-		if (!content)
-			return (NULL);
-		n = read(fd, buf, 4095);
-	}
-	return (content);
-}
-
-static void	free_lines(char **lines)
-{
-	int	i;
-
-	i = 0;
-	while (lines[i])
-		free(lines[i++]);
-	free(lines);
-}
-
-static char	**split_lines(char *content)
-{
-	char	**lines;
-	int		count;
-	int		i;
-
-	count = 1;
-	i = 0;
-	while (content[i])
-		count += (content[i++] == '\n');
-	lines = ft_calloc(count + 1, sizeof(char *));
-	if (!lines)
-		return (NULL);
-	i = 0;
-	count = 0;
-	while (content[i])
-	{
-		if (content[i] == '\n')
-		{
-			lines[count] = ft_substr(content, 0, i);
-			if (lines[count] && ft_strlen(lines[count]) > 0
-				&& lines[count][ft_strlen(lines[count]) - 1] == '\r')
-				lines[count][ft_strlen(lines[count]) - 1] = '\0';
-			count++;
-			content += i + 1;
-			i = 0;
-		}
-		else
-			i++;
-	}
-	lines[count] = ft_strdup(content);
-	return (lines);
-}
-
 static void	parse_lines(t_game *game, char **lines)
 {
 	int	i;
@@ -112,22 +44,12 @@ static void	parse_lines(t_game *game, char **lines)
 
 void	parse_cub_file(t_game *game, char *path)
 {
-	int		fd;
-	char	*content;
 	char	**lines;
 
 	if (ft_strlen(path) < 5
 		|| ft_strncmp(path + ft_strlen(path) - 4, ".cub", 4) != 0)
 		parse_error("File must have .cub extension");
-	fd = open(path, O_RDONLY);
-	if (fd < 0)
-		parse_error("Cannot open .cub file");
-	content = read_all(fd);
-	close(fd);
-	if (!content)
-		parse_error("Failed to read file");
-	lines = split_lines(content);
-	free(content);
+	lines = parse_read_lines(path);
 	if (!lines)
 		parse_error("Failed to parse file lines");
 	parse_lines(game, lines);

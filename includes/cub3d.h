@@ -89,6 +89,7 @@ int				handle_keypress(int keycode, t_game *game);
 int				handle_close(t_game *game);
 void			init_game(t_game *game);
 void			render_frame(t_game *game);
+void			draw_wall_column(t_game *game, t_ray *ray, int x);
 void			draw_background(t_game *game);
 void			load_textures(t_game *game);
 int				get_texture_index(t_ray *ray);
@@ -104,6 +105,8 @@ void			parse_map_section(t_game *game, char **lines, int start);
 void			validate_map(t_game *game);
 void			set_player_spawn(t_game *game);
 void			parse_error(char *msg);
+char			**parse_read_lines(char *path);
+void			free_lines(char **lines);
 void			cleanup(t_game *game);
 
 #endif

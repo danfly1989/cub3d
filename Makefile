@@ -8,10 +8,12 @@ MLX_LIB = $(MLX_DIR)/libmlx.a
 
 SRC = src/main.c \
       src/raycasting.c \
+      src/raycasting_draw.c \
       src/raycasting_background.c \
       src/input.c \
       src/texture_utils.c \
       src/parse.c \
+      src/parse_file.c \
       src/parse_meta.c \
       src/parse_map.c \
       src/parse_validate.c \
