@@ -12,6 +12,9 @@
 
 #include "cub3d.h"
 
+static void	draw_wall_pixel(t_game *game, t_ray *ray, t_img *tex,
+					int x, int y, double tex_pos);
+
 static void	init_ray(t_game *game, t_ray *ray, int x)
 {
 	ray->camera_x = 2 * x / (double)game->screen_width - 1;
@@ -78,38 +81,40 @@ static void	compute_wall_slice(t_game *game, t_ray *ray)
 static void	draw_wall_column(t_game *game, t_ray *ray, int x)
 {
 	int				y;
-	int				tex_y;
-	unsigned int	color;
 	double			step;
 	double			tex_pos;
 	t_img			*tex;
 
 	tex = &game->texture[get_texture_index(ray)];
 	calculate_texture_coords(game, ray, tex);
-
 	step = 1.0 * tex->height / ray->line_height;
 	tex_pos = (ray->draw_start - game->screen_height / 2
-				+ ray->line_height / 2) * step;
-
+					+ ray->line_height / 2) * step;
 	y = ray->draw_start;
 	while (y < ray->draw_end)
 	{
-		tex_y = (int)tex_pos;
-		if (tex_y >= tex->height)  // clamp to avoid overflow
-			tex_y = tex->height - 1;
+		draw_wall_pixel(game, ray, tex, x, y, tex_pos);
 		tex_pos += step;
-
-		color = get_tex_pixel(tex, ray->tex_x, tex_y);
-		// Optional shading for side hits
-		if (ray->side == 1)
-			color = (color >> 1) & 0x7F7F7F;  // darken
-
-		// Write to image buffer (your put_pixel or direct memory)
-		char *dst = game->img.addr + (y * game->img.line_length
-					+ x * (game->img.bits_per_pixel / 8));
-		*(unsigned int *)dst = color;
 		y++;
 	}
+}
+
+static void	draw_wall_pixel(t_game *game, t_ray *ray, t_img *tex,
+					int x, int y, double tex_pos)
+{
+	int				tex_y;
+	unsigned int	color;
+	char			*dst;
+
+	tex_y = (int)tex_pos;
+	if (tex_y >= tex->height)
+		tex_y = tex->height - 1;
+	color = get_tex_pixel(tex, ray->tex_x, tex_y);
+	if (ray->side == 1)
+		color = (color >> 1) & 0x7F7F7F;
+	dst = game->img.addr + (y * game->img.line_length
+			+ x * (game->img.bits_per_pixel / 8));
+	*(unsigned int *)dst = color;
 }
 
 void	render_frame(t_game *game)

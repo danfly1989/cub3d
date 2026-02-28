@@ -38,19 +38,19 @@ typedef struct s_ray
 	int		draw_start;
 	int		draw_end;
 	int		color;
-	int     tex_x;
+	int		tex_x;
 }	t_ray;
 
 typedef struct s_img
 {
-    void    *img;
-    char    *addr;
-    int     bits_per_pixel;
-    int     line_length;
-    int     endian;
-    int     width;
-    int     height;
-}   t_img;
+	void	*img;
+	char	*addr;
+	int		bits_per_pixel;
+	int		line_length;
+	int		endian;
+	int		width;
+	int		height;
+}	t_img;
 
 typedef struct s_game
 {
@@ -66,7 +66,7 @@ typedef struct s_game
 	double	plane_y;
 	int		world_map[24][24];
 	t_img	img;
-	t_img   texture[4];
+	t_img	texture[4];
 }	t_game;
 
 int		handle_keypress(int keycode, t_game *game);
@@ -76,8 +76,8 @@ void	init_world_map(t_game *game);
 void	render_frame(t_game *game);
 void	draw_background(t_game *game);
 void	load_textures(t_game *game);
-int     get_texture_index(t_ray *ray);
-void    calculate_texture_coords(t_game *game, t_ray *ray, t_img *tex);
-unsigned int    get_tex_pixel(t_img *tex, int x, int y);
+int		get_texture_index(t_ray *ray);
+void	calculate_texture_coords(t_game *game, t_ray *ray, t_img *tex);
+unsigned int	get_tex_pixel(t_img *tex, int x, int y);
 
 #endif
