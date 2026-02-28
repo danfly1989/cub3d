@@ -6,7 +6,7 @@
 /*   By: daflynn <daflynn@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/24 18:32:52 by daflynn           #+#    #+#             */
-/*   Updated: 2026/02/24 18:32:54 by daflynn          ###   ########.fr       */
+/*   Updated: 2026/02/28 13:58:51 by daflynn          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ typedef struct s_ray
 	int		draw_start;
 	int		draw_end;
 	int		color;
-} 	t_ray;
+}	t_ray;
 
 static void	put_pixel(t_game *game, int x, int y, int color)
 {
