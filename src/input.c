@@ -10,62 +10,51 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "cub3d.h"
-#include <math.h>
 
 #define MOVE_SPEED 0.1
 #define ROT_SPEED 0.05
+#define ESC_KEY 65307
 
-int	handle_keypress(int keycode, t_game *game)
+static void	move_player(t_game *game, double direction)
 {
 	double	new_x;
 	double	new_y;
+
+	new_x = game->pos_x + (game->dir_x * MOVE_SPEED * direction);
+	new_y = game->pos_y + (game->dir_y * MOVE_SPEED * direction);
+	if (game->world_map[(int)new_x][(int)new_y] == 0)
+	{
+		game->pos_x = new_x;
+		game->pos_y = new_y;
+	}
+}
+
+static void	rotate_player(t_game *game, double angle)
+{
 	double	old_dir_x;
 	double	old_plane_x;
 
-	if (keycode == 65307) // ESC
+	old_dir_x = game->dir_x;
+	game->dir_x = (game->dir_x * cos(angle)) - (game->dir_y * sin(angle));
+	game->dir_y = (old_dir_x * sin(angle)) + (game->dir_y * cos(angle));
+	old_plane_x = game->plane_x;
+	game->plane_x = (game->plane_x * cos(angle)) - (game->plane_y * sin(angle));
+	game->plane_y = (old_plane_x * sin(angle)) + (game->plane_y * cos(angle));
+}
+
+int	handle_keypress(int keycode, t_game *game)
+{
+	if (keycode == ESC_KEY)
 		exit(0);
-
 	if (keycode == 'w')
-	{
-		new_x = game->pos_x + game->dir_x * MOVE_SPEED;
-		new_y = game->pos_y + game->dir_y * MOVE_SPEED;
-		if (game->world_map[(int)new_x][(int)new_y] == 0)
-		{
-			game->pos_x = new_x;
-			game->pos_y = new_y;
-		}
-	}
+		move_player(game, 1.0);
 	if (keycode == 's')
-	{
-		new_x = game->pos_x - game->dir_x * MOVE_SPEED;
-		new_y = game->pos_y - game->dir_y * MOVE_SPEED;
-		if (game->world_map[(int)new_x][(int)new_y] == 0)
-		{
-			game->pos_x = new_x;
-			game->pos_y = new_y;
-		}
-	}
+		move_player(game, -1.0);
 	if (keycode == 'a')
-	{
-		old_dir_x = game->dir_x;
-		game->dir_x = game->dir_x * cos(ROT_SPEED) - game->dir_y * sin(ROT_SPEED);
-		game->dir_y = old_dir_x * sin(ROT_SPEED) + game->dir_y * cos(ROT_SPEED);
-		old_plane_x = game->plane_x;
-		game->plane_x = game->plane_x * cos(ROT_SPEED) - game->plane_y * sin(ROT_SPEED);
-		game->plane_y = old_plane_x * sin(ROT_SPEED) + game->plane_y * cos(ROT_SPEED);
-	}
+		rotate_player(game, ROT_SPEED);
 	if (keycode == 'd')
-	{
-		old_dir_x = game->dir_x;
-		game->dir_x = game->dir_x * cos(-ROT_SPEED) - game->dir_y * sin(-ROT_SPEED);
-		game->dir_y = old_dir_x * sin(-ROT_SPEED) + game->dir_y * cos(-ROT_SPEED);
-		old_plane_x = game->plane_x;
-		game->plane_x = game->plane_x * cos(-ROT_SPEED) - game->plane_y * sin(-ROT_SPEED);
-		game->plane_y = old_plane_x * sin(-ROT_SPEED) + game->plane_y * cos(-ROT_SPEED);
-	}
-
+		rotate_player(game, -ROT_SPEED);
 	render_frame(game);
 	return (0);
 }

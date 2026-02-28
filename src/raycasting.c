@@ -12,7 +12,6 @@
 
 #include "cub3d.h"
 
-
 typedef struct s_ray
 {
 	int		map_x;
@@ -33,15 +32,14 @@ typedef struct s_ray
 	int		draw_start;
 	int		draw_end;
 	int		color;
-}	t_ray;
+} 	t_ray;
 
 static void	put_pixel(t_game *game, int x, int y, int color)
 {
 	char	*dst;
 
-	dst = game->img.addr
-		+ (y * game->img.line_length
-		+ x * (game->img.bits_per_pixel / 8));
+	dst = game->img.addr + (y * game->img.line_length
+			+ x * (game->img.bits_per_pixel / 8));
 	*(unsigned int *)dst = color;
 }
 
@@ -57,9 +55,9 @@ void	draw_background(t_game *game)
 		while (x < game->screen_width)
 		{
 			if (y < game->screen_height / 2)
-    put_pixel(game, x, y, 0x87CEEB);
-else
-    put_pixel(game, x, y, 0x228B22);
+				put_pixel(game, x, y, 0x87CEEB);
+			else
+				put_pixel(game, x, y, 0x228B22);
 			x++;
 		}
 		y++;
@@ -73,10 +71,10 @@ static void	init_ray(t_game *game, t_ray *ray, int x)
 	ray->ray_dir_y = game->dir_y + game->plane_y * ray->camera_x;
 	ray->map_x = (int)game->pos_x;
 	ray->map_y = (int)game->pos_y;
-	ray->delta_dist_x = (ray->ray_dir_x == 0) * 1e30 +
-		(ray->ray_dir_x != 0) * fabs(1 / ray->ray_dir_x);
-	ray->delta_dist_y = (ray->ray_dir_y == 0) * 1e30 +
-		(ray->ray_dir_y != 0) * fabs(1 / ray->ray_dir_y);
+	ray->delta_dist_x = (ray->ray_dir_x == 0) * 1e30
+		+ (ray->ray_dir_x != 0) * fabs(1 / ray->ray_dir_x);
+	ray->delta_dist_y = (ray->ray_dir_y == 0) * 1e30
+		+ (ray->ray_dir_y != 0) * fabs(1 / ray->ray_dir_y);
 	ray->step_x = (ray->ray_dir_x < 0) * -1 + (ray->ray_dir_x >= 0);
 	ray->step_y = (ray->ray_dir_y < 0) * -1 + (ray->ray_dir_y >= 0);
 	ray->side_dist_x = (ray->ray_dir_x < 0) * (game->pos_x - ray->map_x)
@@ -136,7 +134,8 @@ static void	draw_wall_column(t_game *game, t_ray *ray, int x)
 	y = ray->draw_start;
 	while (y < ray->draw_end)
 	{
-		put_pixel(game, x, y, ray->color);		y++;
+		put_pixel(game, x, y, ray->color);
+		y++;
 	}
 }
 
@@ -157,4 +156,3 @@ void	render_frame(t_game *game)
 	}
 	mlx_put_image_to_window(game->mlx, game->win, game->img.img, 0, 0);
 }
-

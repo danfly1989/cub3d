@@ -14,19 +14,18 @@
 # define CUB3D_H
 
 # include "mlx.h"
-/* Use includes/libft.h as the sole libft entrypoint for project files. */
 # include "libft.h"
 # include <math.h>
 # include <stdlib.h>
 
 typedef struct s_img
 {
-    void    *img;
-    char    *addr;
-    int     bits_per_pixel;
-    int     line_length;
-    int     endian;
-}   t_img;
+	void	*img;
+	char	*addr;
+	int		bits_per_pixel;
+	int		line_length;
+	int		endian;
+} 	t_img;
 
 typedef struct s_game
 {
@@ -41,11 +40,11 @@ typedef struct s_game
 	double	plane_x;
 	double	plane_y;
 	int		world_map[24][24];
-	t_img img;
-}	t_game;
+	t_img	img;
+} 	t_game;
 
-int	handle_keypress(int keycode, t_game *game);
-int	handle_close(t_game *game);
+int		handle_keypress(int keycode, t_game *game);
+int		handle_close(t_game *game);
 void	init_game(t_game *game);
 void	init_world_map(t_game *game);
 void	render_frame(t_game *game);
