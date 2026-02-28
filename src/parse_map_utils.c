@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 #include "cub3d.h"
 
-static int	count_map_rows(char **lines, int start)
+int	count_map_rows(char **lines, int start)
 {
 	int	count;
 
@@ -21,7 +21,7 @@ static int	count_map_rows(char **lines, int start)
 	return (count);
 }
 
-static void	set_map_width(t_game *game)
+void	set_map_width(t_game *game)
 {
 	int	i;
 	int	len;
@@ -37,7 +37,7 @@ static void	set_map_width(t_game *game)
 	}
 }
 
-static void	set_ns_direction(t_game *game, char c)
+void	set_ns_direction(t_game *game, char c)
 {
 	game->dir_x = 0;
 	if (c == 'N')
@@ -53,7 +53,7 @@ static void	set_ns_direction(t_game *game, char c)
 	game->plane_y = 0;
 }
 
-static void	set_player_direction(t_game *game, char c)
+void	set_player_direction(t_game *game, char c)
 {
 	if (c == 'N' || c == 'S')
 		set_ns_direction(game, c);
@@ -73,4 +73,3 @@ static void	set_player_direction(t_game *game, char c)
 		game->plane_x = 0;
 	}
 }
-
