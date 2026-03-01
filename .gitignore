@@ -1,0 +1,7 @@
+# Build artifacts
+*.o
+*.a
+cub3d
+
+# MiniLibX clone directory
+minilibx/

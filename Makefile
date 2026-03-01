@@ -28,9 +28,16 @@ CFLAGS  = -Wall -Wextra -Werror -Iincludes -I$(LIBFT_DIR) -I$(MLX_DIR)
 LDFLAGS = -L$(LIBFT_DIR) -L$(MLX_DIR)
 LDLIBS  = -lft -lmlx -lm -lXext -lX11 -lpthread -lrt -ldl
 
-.PHONY: all clean fclean re
+.PHONY: all check_conflicts clean fclean re
 
-all: $(MLX_LIB) $(LIBFT) $(NAME)
+all: check_conflicts $(MLX_LIB) $(LIBFT) $(NAME)
+
+check_conflicts:
+	@if rg -n "^(<<<<<<<|=======|>>>>>>>)" Makefile src includes >/dev/null 2>&1; then \
+		echo "Error: unresolved merge conflict markers found."; \
+		rg -n "^(<<<<<<<|=======|>>>>>>>)" Makefile src includes; \
+		exit 1; \
+	fi
 
 $(LIBFT):
 	@make -C $(LIBFT_DIR)
@@ -46,7 +53,7 @@ $(MLX_LIB): | $(MLX_DIR)
 $(NAME): $(OBJ) $(LIBFT) $(MLX_LIB)
 	$(CC) $(CFLAGS) $(OBJ) -o $@ $(LDFLAGS) $(LDLIBS)
 
-src/%.o: src/%.c
+src/%.o: src/%.c | $(MLX_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
